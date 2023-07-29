@@ -1,11 +1,12 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const Build = () => {
-
+    const [workout, setWorkout] = useState({ "size": 0, "exercises": {} })
+    useEffect(() => console.log("Change"), [workout])
 
     const getData = async () => {
         const response = await axios.get("http://localhost:5000/api/exercise-database")
@@ -21,77 +22,161 @@ const Build = () => {
         const formData = new FormData(e.target)
         const formJson = Object.fromEntries(formData.entries())
         console.log(formJson)
-        
+        const resp = await fetch("http://localhost:5000/api/exercise-search", {
+            "method": "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formJson)
+        })
+            .then(resp => resp.json())
+            // .then(data => console.log(data.data))
+            .then(data => setExercises(data))
+            .catch(error => console.log(error))
     }
-    const findData = async () => {
-        let data = await getData()
-        setExercises(data)
+    const [exercises, setExercises] = useState(() => loadData())
+
+    const addToWorkout = (exercise) => {
+        if (workout.size === 12) {
+            alert("You've reached the maximuum number of exercises in your workout (12)")
+        } else {
+        let workoutCopy = { ...workout };    
+        workoutCopy.size++;
+        workoutCopy.exercises[exercise.id] ?
+            workoutCopy.exercises[exercise.id].quantity++
+            :
+            workoutCopy.exercises[exercise.id] = { "data": exercise, "quantity": 1 };
+        console.log(workoutCopy);
+        setWorkout(workoutCopy);
+    }
     }
 
-    const [exercises, setExercises] = useState(() => loadData())
+    const removeFromWorkout = (exercise) => {
+        let workoutCopy = { ...workout };    
+        workoutCopy.size--;
+        workoutCopy.exercises[exercise.id].quantity === 1 ?
+        delete workoutCopy.exercises[exercise.id] 
+        :
+        workoutCopy.exercises[exercise.id].quantity--;
+        console.log(workoutCopy);
+        setWorkout(workoutCopy);
+    }
 
     const flipCard = (i) => {
         const instruction = document.getElementById(i)
         instruction.classList.toggle('d-none')
         console.log(instruction)
         const dets = document.getElementById(`${i}-dets`)
-        dets.classList.toggle('o-none')
+        if (dets){
+            dets.classList.toggle('o-none')
         console.log(dets)
+        }
+        
+    }
 
-
+    const isInWorkout = (ex_id) => {
+        console.log(workout.exercises)
+        if (Object.keys(workout.exercises).includes(ex_id)){
+            console.log("it's here!")
+            return true
+        } else {
+            console.log("not here")
+            return false
+        }
     }
 
 
     return (
         <section className="build-bg">
-            <h1>This is Build!</h1>
-            <div className="search-bar">
-                <form method="POST" onSubmit={searchData}>
-                    <label htmlFor="muscle" className="white-text">Muscle Group:</label>
-                    <select id="cars" name="muscle">
-                        <option value=""></option>
-                        <option value="abdominals">Abdominals</option>
-                        <option value="abductors">Abductors</option>
-                        <option value="adductors">Adductors</option>
-                        <option value="biceps">Biceps</option>
-                        <option value="calves">Calves</option>
-                        <option value="chest">Chest</option>
-                        <option value="middle_Back">Middle Back</option>
-                        <option value="lats">Lats</option>
-                        <option value="lower_Back">Lower Back</option>
-                        <option value="traps">Traps</option>
-                        <option value="triceps">Triceps</option>
-                    </select>
-                    <label className="white-text" htmlFor="difficulty">Difficulty:</label>
-                    <select id="difficulty" name="cars">
-                        <option value=""></option>
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="expert">Expert</option>
-                    </select>
-                    <input id="no-weights" value="no weights" type="checkbox" />
-                    <label className="white-text" htmlFor="no-weights">No weights?</label>
-                    <button className="darkblue-btn">Submit</button>
-                </form>
+            <h1 className="center-text">Time to build your Workout...</h1>
+            <div className="flx-r flx-wrap">
+                {workout.exercises && workout.size > 0 ? Object.values(workout.exercises).map((ex, i) => {
+                    return <div key={i} className="wo-card mx-2 my-2">
+                        <div className="close-btn"></div>
+                        <img onClick={() => removeFromWorkout(ex.data)} className="close-cross" src="/images/white-cross-curved.png" />
+                        <div id={`${i}top`} className="wo-instructions d-none"><p className="pad8 x-small white-text center-text"><span className="medium bold white-text">Instructions:</span> <br /> {ex.data.instructions}</p></div>
+
+                        <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.data.name} *{ex.quantity}</strong></p></div>
+                        <div className="two flx5 pt-2 front">
+                            {ex.data.equipment === "e_z_curl_bar" || ex.data.equipment === "dumbbell" || ex.data.equipment === "barbell" ?
+                                <img className="equip-icon" src={`/images/${ex.data.equipment}-logo.png`} /> : <div className="card-empty"></div>}
+                            <img className="wo-muscle-group-icon" src={`/images/${ex.data.muscle}-logo.png`} />
+                            <img className="diff-icon" src={`/images/${ex.data.difficulty}-logo.png`} />
+                        </div>
+
+                        
+                        <div className="wo-four flx1 wide100"><p className="m0 center-text"><Link className="black-text" onClick={() => { flipCard(`${i}top`) }}>Instructions</Link></p></div>
+                    </div>
+                })
+                    : null
+                }
+
+                {workout.size < 12 ? 
+                <div title="Add up to 12 exercises from the search results below!" className="ex-box mx-2 my-2 center-text">
+                    <span className="v-helper"></span>
+                    <p className="m0 xxx-large v-helped white-text">+</p>
+                </div> : null
+                }
             </div>
+
+
+            <form method="POST" onSubmit={searchData}>
+                <div className="search-bar flx-r just-se large">
+
+                    <div className="pad2">
+                        <label htmlFor="muscle" className="white-text">Muscle Group:&nbsp;</label>
+                        <select id="cars" name="muscle">
+                            <option value=""></option>
+                            <option value="abdominals">Abdominals</option>
+                            <option value="abductors">Abductors</option>
+                            <option value="adductors">Adductors</option>
+                            <option value="biceps">Biceps</option>
+                            <option value="calves">Calves</option>
+                            <option value="chest">Chest</option>
+                            <option value="middle_back">Middle Back</option>
+                            <option value="lats">Lats</option>
+                            <option value="lower_back">Lower Back</option>
+                            <option value="traps">Traps</option>
+                            <option value="triceps">Triceps</option>
+                        </select>
+                    </div>
+                    <div className="pad2">
+                        <label className="white-text" htmlFor="difficulty">Difficulty:&nbsp;</label>
+                        <select id="difficulty" name="difficulty">
+                            <option value=""></option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                    <div className="pad2">
+                        <input name="no-weights" id="no-weights" value="body_only" type="checkbox" />
+                        <label className="white-text" htmlFor="no-weights">No weights?</label>
+                    </div>
+                    <button className="sub-btn small">Search</button>
+                </div>
+            </form>
+
+
             <div className="exercises flx-r just-se flx-wrap">
-                {exercises.data && exercises.data.length > 0 ? exercises.data.slice(0, 5).map((e, i) => {
-                    return <div key={i} className="ex-card mx-2 my-2" title={e.instructions}>
-                        <div className="selection-full"></div>
-                        <div className="selection-count">1</div>
-                        <div id={i} className="instructions d-none"><p className="pad8 x-small white-text center-text"><span className="medium bold white-text">Instructions:</span> <br /> {e.instructions}</p></div>
-                        <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{e.name}</strong></p></div>
-                        <div className="two flx5 pad8 front">
-                            {e.equipment === "machine" || e.equipment === "dumbell" || e.equipment === "barbell" ?
-                                <img className="equip-icon" src={`/images/${e.equipment}-logo.png`} /> : <div className="card-empty"></div>}
-                            <img className="muscle-group-icon" src={`/images/${e.muscle}-logo.png`} />
-                            <img className="diff-icon" src={`/images/${e.difficulty}-logo.png`} />
+                {exercises.data && exercises.data.length > 0 ? exercises.data.slice(0, 5).map((ex, i) => {
+                    return <div key={i} className="ex-card mx-2 my-2">
+                        {workout.exercises[ex.id] ? <div className="selection-full"></div> : <div className="selection-empty"></div>}
+                        {workout.exercises[ex.id] ? <div className="selection-count">{workout.exercises[ex.id].quantity}</div> : null }
+                        
+                        <div id={i} className="instructions d-none"><p className="pad8 x-small white-text center-text"><span className="medium bold white-text">Instructions:</span> <br /> {ex.instructions}</p></div>
+                        <div onClick={() => addToWorkout(ex)} className="wide100 center-text">
+                            <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.name}</strong></p></div>
+                            <div className="two flx5 pad8 front">
+                                {ex.equipment === "dumbbell" || ex.equipment === "barbell" || ex.equipment === "e-z_curl_bar" ?
+                                    <img className="equip-icon" src={`/images/${ex.equipment}-logo.png`} /> : <div className="card-empty"></div>}
+                                <img className="muscle-group-icon" src={`/images/${ex.muscle}-logo.png`} />
+                                <img className="diff-icon" src={`/images/${ex.difficulty}-logo.png`} />
+                            </div>
                         </div>
                         <div id={`${i}-dets`} className="three flx2 grid-2c border-top-b">
-                            <p className="m0 mx-3"><span className="card-att">Muscle:</span> {e.muscle.charAt(0).toUpperCase() + e.muscle.slice(1)}</p>
-                            <p className="m0 mx-3"><span className="card-att">Equip:</span> {e.equipment.charAt(0).toUpperCase() + e.equipment.slice(1)}</p>
-                            <p className="m0 mx-3"><span className="card-att">Type:</span> {e.ex_type.charAt(0).toUpperCase() + e.ex_type.slice(1)}</p>
-                            <p className="m0 mx-3"><span className="card-att">Diff:</span> {e.difficulty.charAt(0).toUpperCase() + e.difficulty.slice(1)}</p>
+                            <p className="m0 mx-3"><span className="card-att">Muscle:</span> {ex.muscle.charAt(0).toUpperCase() + ex.muscle.slice(1)}</p>
+                            <p className="m0 mx-3"><span className="card-att">Equip:</span> {ex.equipment.charAt(0).toUpperCase() + ex.equipment.slice(1)}</p>
+                            <p className="m0 mx-3"><span className="card-att">Type:</span> {ex.ex_type.charAt(0).toUpperCase() + ex.ex_type.slice(1)}</p>
+                            <p className="m0 mx-3"><span className="card-att">Diff:</span> {ex.difficulty.charAt(0).toUpperCase() + ex.difficulty.slice(1)}</p>
                         </div>
                         <div className="four flx1 wide100"><p className="m0 center-text"><Link className="black-text" onClick={() => { flipCard(i) }}>Instructions</Link></p></div>
 
