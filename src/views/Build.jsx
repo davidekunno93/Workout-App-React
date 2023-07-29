@@ -83,10 +83,32 @@ const Build = () => {
         }
     }
 
+    // const [v, setV] = useState(null)
+    // useEffect(()=> {console.log(`${v} <--- CHANGE`), [v]})
+
+    const [finalWorkout, setFinalWorkout] = useState({});
+
+    const goToBuildFinal = () => {
+        let workoutCopy = {...workout}
+        let d = {}
+        console.log(Object.values(workoutCopy.exercises))
+        // loop thru workout exs, add ex to dict as many times as q
+        let k = 1
+        let exes = Object.values(workoutCopy.exercises)
+        for (let ex of exes){
+            for (let q = 0; q < ex.quantity; q++){
+                d[k] = ex.data
+                k++
+            }
+          }
+        console.log(d) 
+        setFinalWorkout(d)
+    }
+
 
     return (
         <section className="build-bg">
-            <h1 className="center-text">Time to build your Workout...</h1>
+            <h1 onClick={() => goToBuildFinal()} className="center-text">Time to build your Workout...</h1>
             <div className="flx-r flx-wrap">
                 {workout.exercises && workout.size > 0 ? Object.values(workout.exercises).map((ex, i) => {
                     return <div key={i} className="wo-card mx-2 my-2">
@@ -97,7 +119,7 @@ const Build = () => {
                         <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.data.name} *{ex.quantity}</strong></p></div>
                         <div className="two flx5 pt-2 front">
                             {ex.data.equipment === "e_z_curl_bar" || ex.data.equipment === "dumbbell" || ex.data.equipment === "barbell" ?
-                                <img className="equip-icon" src={`/images/${ex.data.equipment}-logo.png`} /> : <div className="card-empty"></div>}
+                                <img className="equip-icon" src={`/images/weight-logo.png`} /> : <div className="card-empty"></div>}
                             <img className="wo-muscle-group-icon" src={`/images/${ex.data.muscle}-logo.png`} />
                             <img className="diff-icon" src={`/images/${ex.data.difficulty}-logo.png`} />
                         </div>
@@ -116,7 +138,8 @@ const Build = () => {
                 </div> : null
                 }
             </div>
-
+            {workout.size > 1 ? <button className="green-btn center my-3">Complete?</button> : <button title="Add 2 or more exercises to create a workout" className="disabled center my-3">Complete?</button> }
+                
 
             <form method="POST" onSubmit={searchData}>
                 <div className="search-bar flx-r just-se large">
@@ -134,6 +157,7 @@ const Build = () => {
                             <option value="middle_back">Middle Back</option>
                             <option value="lats">Lats</option>
                             <option value="lower_back">Lower Back</option>
+                            <option value="shoulders">Shoulders</option>
                             <option value="traps">Traps</option>
                             <option value="triceps">Triceps</option>
                         </select>
@@ -157,7 +181,7 @@ const Build = () => {
 
 
             <div className="exercises flx-r just-se flx-wrap">
-                {exercises.data && exercises.data.length > 0 ? exercises.data.slice(0, 5).map((ex, i) => {
+                {exercises.data && exercises.data.length > 0 ? exercises.data.map((ex, i) => {
                     return <div key={i} className="ex-card mx-2 my-2">
                         {workout.exercises[ex.id] ? <div className="selection-full"></div> : <div className="selection-empty"></div>}
                         {workout.exercises[ex.id] ? <div className="selection-count">{workout.exercises[ex.id].quantity}</div> : null }
@@ -167,7 +191,7 @@ const Build = () => {
                             <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.name}</strong></p></div>
                             <div className="two flx5 pad8 front">
                                 {ex.equipment === "dumbbell" || ex.equipment === "barbell" || ex.equipment === "e-z_curl_bar" ?
-                                    <img className="equip-icon" src={`/images/${ex.equipment}-logo.png`} /> : <div className="card-empty"></div>}
+                                    <img className="equip-icon" src={`/images/weight-logo.png`} /> : <div className="card-empty"></div>}
                                 <img className="muscle-group-icon" src={`/images/${ex.muscle}-logo.png`} />
                                 <img className="diff-icon" src={`/images/${ex.difficulty}-logo.png`} />
                             </div>

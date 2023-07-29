@@ -880,7 +880,7 @@ button:focus-visible {
   position: absolute;
   width: 100%;
   height: 93%;
-  /* overflow: scroll; */
+  overflow: hidden;
 }
 .wo-instructions{
   background-color: #332d2d;
@@ -950,4 +950,13 @@ button:focus-visible {
   top: 29px;
   right: 24px;
   transition-duration: 0.1s;
+}
+.disabled {
+  background-color: gainsboro;
+  width: 350px;
+  color: grey;
+  transition-duration: 0.4s;
+}
+.disabled:hover {
+  border: 1px solid rgba(0, 0, 0, 0);
 }
