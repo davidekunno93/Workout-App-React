@@ -1,12 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import BuildFinal from "./BuildFinal";
 
-const Build = () => {
-    const [workout, setWorkout] = useState({ "size": 0, "exercises": {} })
-    useEffect(() => console.log("Change"), [workout])
+const Build = (props) => {
+    // const [workout, setWorkout] = useState({ "size": 0, "exercises": {} })
+    // useEffect(() => console.log("Change"), [workout])
+    const workout = props.workout
+    const setWorkout = props.setWorkout
 
     const getData = async () => {
         const response = await axios.get("http://localhost:5000/api/exercise-database")
@@ -46,6 +49,7 @@ const Build = () => {
             workoutCopy.exercises[exercise.id] = { "data": exercise, "quantity": 1 };
         console.log(workoutCopy);
         setWorkout(workoutCopy);
+        toOrderedDict();
     }
     }
 
@@ -58,6 +62,7 @@ const Build = () => {
         workoutCopy.exercises[exercise.id].quantity--;
         console.log(workoutCopy);
         setWorkout(workoutCopy);
+        toOrderedDict();
     }
 
     const flipCard = (i) => {
@@ -86,29 +91,43 @@ const Build = () => {
     // const [v, setV] = useState(null)
     // useEffect(()=> {console.log(`${v} <--- CHANGE`), [v]})
 
-    const [finalWorkout, setFinalWorkout] = useState({});
-
-    const goToBuildFinal = () => {
+    const toOrderedDict = () => {
         let workoutCopy = {...workout}
+        // d is a dict of the finalworkout
         let d = {}
+        // l is a list of the finalworkout
+        let l = []
         console.log(Object.values(workoutCopy.exercises))
         // loop thru workout exs, add ex to dict as many times as q
         let k = 1
         let exes = Object.values(workoutCopy.exercises)
+        const sets = {"sets": 4}
+        const reps = {"reps": 10}
         for (let ex of exes){
             for (let q = 0; q < ex.quantity; q++){
-                d[k] = ex.data
+                let exercise = {...ex.data, ...sets, ...reps}
+                // dict needs to be updated with copies of sets/reps or the sets/reps value for all duplicate exercises will change at the same time
+                // ex.data["sets"] = 4
+                // ex.data["reps"] = 10
+                d[k] = exercise
+                l.push(exercise)
                 k++
             }
           }
-        console.log(d) 
-        setFinalWorkout(d)
+        console.log(l)
+        props.setFinalWorkout(l)
+        console.log(props.finalWorkout)
     }
 
+    
+    const check = () => {
+        console.log(props.finalWorkout)
+    }
 
     return (
+        <>
         <section className="build-bg">
-            <h1 onClick={() => goToBuildFinal()} className="center-text">Time to build your Workout...</h1>
+            <h1 onClick={() => check()} className="center-text">Let's build your Workout...</h1>
             <div className="flx-r flx-wrap">
                 {workout.exercises && workout.size > 0 ? Object.values(workout.exercises).map((ex, i) => {
                     return <div key={i} className="wo-card mx-2 my-2">
@@ -138,7 +157,7 @@ const Build = () => {
                 </div> : null
                 }
             </div>
-            {workout.size > 1 ? <button className="green-btn center my-3">Complete?</button> : <button title="Add 2 or more exercises to create a workout" className="disabled center my-3">Complete?</button> }
+            {workout.size > 1 ? <Link to="/workout/build-final"><button className="green-btn center my-3">Complete?</button></Link> : <button title="Add 2 or more exercises to create a workout" className="disabled center my-3">Complete?</button> }
                 
 
             <form method="POST" onSubmit={searchData}>
@@ -154,9 +173,11 @@ const Build = () => {
                             <option value="biceps">Biceps</option>
                             <option value="calves">Calves</option>
                             <option value="chest">Chest</option>
-                            <option value="middle_back">Middle Back</option>
+                            <option value="hamstrings">Hamstrings</option>
                             <option value="lats">Lats</option>
                             <option value="lower_back">Lower Back</option>
+                            <option value="middle_back">Middle Back</option>
+                            <option value="quadriceps">Quadriceps</option>
                             <option value="shoulders">Shoulders</option>
                             <option value="traps">Traps</option>
                             <option value="triceps">Triceps</option>
@@ -209,6 +230,7 @@ const Build = () => {
                 }) : <h3><FontAwesomeIcon icon={faSpinner} spin />&nbsp;&nbsp;Loading</h3>}
             </div>
         </section>
+        </>
     )
 }
 export default Build;

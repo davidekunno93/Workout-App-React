@@ -960,3 +960,34 @@ button:focus-visible {
 .disabled:hover {
   border: 1px solid rgba(0, 0, 0, 0);
 }
+.set-rep-box{
+  background-color: #c6d4ff;
+  width: 350px;
+  height: 175px;
+}
+
+.arrow{
+  width: 60px;
+}
+.plus{
+  background-color: rgb(133, 150, 211);
+  color: white;
+  border-radius:8px 8px 0 0;
+  cursor: pointer;
+}
+.minus {
+  background-color: rgb(133, 150, 211);
+  color: white;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+}
+.mx-n{
+  margin-left: 0.5px;
+  margin-right: 0.5px;
+}
+.rep-number{
+  width: 40px;
+}
+.set-count, .rep-count {
+  width: 110px;
+}
