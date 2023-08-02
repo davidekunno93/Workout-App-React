@@ -18,3 +18,15 @@ Limitations:
 4) BuildFinal page - when rep # goes from single to double digits the text shifts - make independent div container for # and center text? **DONE**
 
 5) Make pages responsive and fit to phone device
+
+6) Middle_back/Lower_back/Body_only - change render to no include the underscores
+
+7) Exercises that are duration based need mins/miles instead of reps. (i.e. planks, running)
+
+8) 200 char limit on workout description
+
+9) Review workout info before submitting? Ability to edit workout info in case of typo/mistake etc
+
+10) If title is empty - halt workout creation - must type in title of workout.. desc optional - maybe add required* indication on title
+
+11) Add ability to update workouts

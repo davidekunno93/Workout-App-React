@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import BuildFinal from "./BuildFinal";
+import { DataContext } from "../context/DataProvider";
 
 const Build = (props) => {
+    const { user, setUser } = useContext(DataContext);
     // const [workout, setWorkout] = useState({ "size": 0, "exercises": {} })
     // useEffect(() => console.log("Change"), [workout])
     const workout = props.workout
@@ -103,9 +105,22 @@ const Build = (props) => {
         let exes = Object.values(workoutCopy.exercises)
         const sets = {"sets": 4}
         const reps = {"reps": 10}
+        const intensity = {"intensity": "light"}
+        const intensity_na = {"intensity": "na"}
+        const circuits = {"circuits": 1}
+        const wo_name = {"name": ""}
+        const wo_desc = {"desc": ""}
+        // const totalReps = {"totalReps": null}
+        // const intensityOverall = {"intensity" : null}
+        const info = {"info" : {...circuits, ...wo_name, ...wo_desc}}
         for (let ex of exes){
             for (let q = 0; q < ex.quantity; q++){
-                let exercise = {...ex.data, ...sets, ...reps}
+                let exercise = {}
+                if (ex.data.equipment === "body_only"){
+                    exercise = {...ex.data, ...sets, ...reps, ...intensity_na}
+                } else {
+                    exercise = {...ex.data, ...sets, ...reps, ...intensity}
+                }
                 // dict needs to be updated with copies of sets/reps or the sets/reps value for all duplicate exercises will change at the same time
                 // ex.data["sets"] = 4
                 // ex.data["reps"] = 10
@@ -115,6 +130,7 @@ const Build = (props) => {
             }
           }
         console.log(l)
+        l.push({...info})
         props.setFinalWorkout(l)
         console.log(props.finalWorkout)
     }
@@ -123,6 +139,8 @@ const Build = (props) => {
     const check = () => {
         console.log(props.finalWorkout)
     }
+
+    
 
     return (
         <>
@@ -137,7 +155,7 @@ const Build = (props) => {
 
                         <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.data.name} *{ex.quantity}</strong></p></div>
                         <div className="two flx5 pt-2 front">
-                            {ex.data.equipment === "e_z_curl_bar" || ex.data.equipment === "dumbbell" || ex.data.equipment === "barbell" ?
+                            {ex.data.equipment === "e_z_curl_bar" || ex.data.equipment === "dumbbell" || ex.data.equipment === "barbell" || ex.equipment === "cable" ?
                                 <img className="equip-icon" src={`/images/weight-logo.png`} /> : <div className="card-empty"></div>}
                             <img className="wo-muscle-group-icon" src={`/images/${ex.data.muscle}-logo.png`} />
                             <img className="diff-icon" src={`/images/${ex.data.difficulty}-logo.png`} />
@@ -165,7 +183,7 @@ const Build = (props) => {
 
                     <div className="pad2">
                         <label htmlFor="muscle" className="white-text">Muscle Group:&nbsp;</label>
-                        <select id="cars" name="muscle">
+                        <select id="muscles-dropdown" name="muscle">
                             <option value=""></option>
                             <option value="abdominals">Abdominals</option>
                             <option value="abductors">Abductors</option>
@@ -211,7 +229,7 @@ const Build = (props) => {
                         <div onClick={() => addToWorkout(ex)} className="wide100 center-text">
                             <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.name}</strong></p></div>
                             <div className="two flx5 pad8 front">
-                                {ex.equipment === "dumbbell" || ex.equipment === "barbell" || ex.equipment === "e-z_curl_bar" ?
+                                {ex.equipment === "dumbbell" || ex.equipment === "barbell" || ex.equipment === "e-z_curl_bar" || ex.equipment === "cable" ?
                                     <img className="equip-icon" src={`/images/weight-logo.png`} /> : <div className="card-empty"></div>}
                                 <img className="muscle-group-icon" src={`/images/${ex.muscle}-logo.png`} />
                                 <img className="diff-icon" src={`/images/${ex.difficulty}-logo.png`} />
@@ -220,7 +238,7 @@ const Build = (props) => {
                         <div id={`${i}-dets`} className="three flx2 grid-2c border-top-b">
                             <p className="m0 mx-3"><span className="card-att">Muscle:</span> {ex.muscle.charAt(0).toUpperCase() + ex.muscle.slice(1)}</p>
                             <p className="m0 mx-3"><span className="card-att">Equip:</span> {ex.equipment.charAt(0).toUpperCase() + ex.equipment.slice(1)}</p>
-                            <p className="m0 mx-3"><span className="card-att">Type:</span> {ex.ex_type.charAt(0).toUpperCase() + ex.ex_type.slice(1)}</p>
+                            <p className="m0 mx-3"><span className="card-att">Type:</span> {ex.ex_type === "olympic_weightlifting" ? <p className="m0 inline">Olympic lifting</p> : ex.ex_type.charAt(0).toUpperCase() + ex.ex_type.slice(1)}</p>
                             <p className="m0 mx-3"><span className="card-att">Diff:</span> {ex.difficulty.charAt(0).toUpperCase() + ex.difficulty.slice(1)}</p>
                         </div>
                         <div className="four flx1 wide100"><p className="m0 center-text"><Link className="black-text" onClick={() => { flipCard(i) }}>Instructions</Link></p></div>

@@ -111,6 +111,7 @@ const Register = () => {
                 </div>
                 </form>
             </div>
+            <div className="card-empty"></div>
         </>
     )
 }

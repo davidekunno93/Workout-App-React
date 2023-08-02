@@ -215,6 +215,12 @@ button:focus-visible {
 .flx5{
   flex: 5;
 }
+.flx6{
+  flex: 6;
+}
+.flx7{
+  flex: 7;
+}
 .x-small{
   font-size: x-small;
 }
@@ -285,7 +291,38 @@ button:focus-visible {
   min-height: 100vh;
 }
 .navbar{
-  height: 28px;
+  height: 60px;
+}
+.username{
+  color: white;
+  margin-top: 2px;
+}
+.nav-logo{
+  width: 50px;
+  vertical-align:top;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.nav-text-logo{
+  width: 100px;
+  vertical-align:middle;
+  margin-right: 20px;
+}
+.nav-btn{
+  border-radius: 0px;
+  background-color: transparent;
+  color: white;
+  transition-duration: 0.4s;
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
+  padding: 12px;
+}
+.nav-btn:hover{
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-bottom: 2px solid white;
+  transition-duration: 0.4s;
+}
+.nav-btn:active{
+  background-color: #3f3c3c;
 }
 
 .page-contain{
@@ -485,11 +522,20 @@ button:focus-visible {
 .mb-3{
   margin-bottom: 15px;
 }
+.mb-4{
+  margin-bottom: 25px;
+}
+.mb-5{
+  margin-bottom: 50px;
+}
 .mb-10{
   margin-bottom: 10px;
 }
 .mt-1{
   margin-top: 5px;
+}
+.mt-1h{
+  margin-top: 8px;
 }
 .mt-2{
   margin-top: 10px;
@@ -502,6 +548,9 @@ button:focus-visible {
 }
 .mt-5{
   margin-top: 50px;
+}
+.mt-3h{
+  margin-top: 20px;
 }
 .my-0{
   margin-top: 0px;
@@ -523,6 +572,14 @@ button:focus-visible {
 .my-3{
   margin-top: 15px;
   margin-bottom: 15px;
+}
+.my-4{
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+.my-5{
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 .mx-1{
   margin-right: 5px;
@@ -720,16 +777,7 @@ button:focus-visible {
   display: inline-block;
   width: 200px;
 }
-.username{
-  color: white;
-  margin-top: 2px;
-}
-.nav-logo{
-  width: 30px;
-  vertical-align:middle;
-  margin-left: 5px;
-  margin-right: 5px;
-}
+
 .wo-card{
   background-color: #c6d4ff;
   width: 350px;
@@ -860,6 +908,9 @@ button:focus-visible {
 .border-top-b{
   border-top: 1px solid black;
 }
+.border-bottom-b{
+  border-bottom: 1px solid black;
+}
 .card-att{
   font-size: small;
   opacity: 0.5;
@@ -908,7 +959,7 @@ button:focus-visible {
   height: 173px;
   width: 346px;
   border: 2px dashed white;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(201, 210, 247, 0.5);
   border-radius: 14px;
   transition-duration: 0.4s;
 }
@@ -968,12 +1019,37 @@ button:focus-visible {
 
 .arrow{
   width: 60px;
+  cursor: pointer;
+}
+.arrow:hover{
+  opacity: 0.75;
+}
+.arrow:active{
+  opacity: 0.5;
+}
+.arrow-disabled{
+  width: 40px;
+  opacity: 0.1;
+}
+.arrow2{
+  width: 40px;
+  cursor: pointer;
+}
+.arrow2:hover{
+  opacity: 0.75;
+}
+.arrow2:active{
+  opacity: 0.5;
 }
 .plus{
   background-color: rgb(133, 150, 211);
   color: white;
   border-radius:8px 8px 0 0;
   cursor: pointer;
+}
+.plus:hover, .minus:hover{
+  background-color: rgb(92, 109, 169);
+  transition-duration: 0.2s;
 }
 .minus {
   background-color: rgb(133, 150, 211);
@@ -990,4 +1066,314 @@ button:focus-visible {
 }
 .set-count, .rep-count {
   width: 110px;
+}
+.sr-box{
+  width: 350px;
+}
+.intensity {
+  width: 350px;
+  height: 120px;
+  margin-top: 40px;
+  cursor: pointer;
+  transition-duration: 0.2s;
+}
+.intensity-disabled {
+  width: 350px;
+  height: 120px;
+  margin-top: 40px;
+  -webkit-filter: brightness(70%);
+}
+.intensity:hover {
+  -webkit-filter: brightness(90%);
+  transition-duration: 0.2s;
+}
+.ml-2{
+  margin-left: 10px;
+}
+.ml-3{
+  margin-left: 15px;
+}
+.ml-4{
+  margin-left: 25px;
+}
+.mr-2{
+  margin-right: 10px;
+}
+.mr-3{
+  margin-right: 15px;
+}
+.mr-4{
+  margin-right: 25px;
+}
+#circuit-checkbox{
+  width: 15px;
+}
+#repeats{
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  width: 60px;
+  font-size: medium;
+  text-align: center;
+  border-left: 1px solid black;
+}
+#muscles-dropdown, #difficulty {
+  border-radius: 8px;
+  
+}
+.inline{
+  display: inline-block
+}
+
+.build-workout-box, .search-workout-box{
+  background-color: #332d2d;
+  width: 350px;
+  height: 500px;
+  border: none;
+  border-radius: 16px;
+  transition-duration: 0.4s;
+  overflow: hidden;
+  cursor: pointer;
+}
+.build-workout-box:hover, .search-workout-box:hover{
+  -webkit-filter: brightness(60%);
+  transition-duration: 0.4s;
+}
+.img-blocks, .img-mag{
+  width: 200px;
+  height: 200px;
+  transition-duration: 0.4s;
+}
+.gains-text{
+  color: gainsboro;
+}
+.build-workout-box:hover .img-blocks{
+  width: 220px;
+  height: 220px;
+  transition-duration: 0.4s;
+}
+.search-workout-box:hover .img-mag{
+  width: 220px;
+  height: 220px;
+  transition-duration: 0.4s;
+}
+.black-back{
+  background-color: #1f1c1c;
+}
+.six{
+  background-color: lightblue;
+}
+.seven{
+  background-color: lightpink;
+}
+.eight{
+  background-color: bisque;
+}
+.workout-card-div{
+  width: 800px;
+  height: 500px;
+  background-color: gainsboro;
+  margin: auto;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 50px;
+}
+.workout-card-div:hover .wc-top{
+  background-color: #272323;
+  transition-duration: 0.4s;
+}
+.wc-top{
+  background-color: #332d2d;
+  transition-duration: 0.4s;
+}
+
+.wct-right{
+  float: right;
+}
+.int, .end, .circ{
+  width: 200px;
+  text-align: center;
+}
+.p0{
+  padding: 0;
+}
+.xxx-larges{
+  font-size: 82px;
+}
+.wc-mid{
+  position: relative;
+}
+.wcm-muscles{
+  border-bottom: 2px solid grey;
+  width: 90%;
+}
+.wcm-back{
+  position: absolute;
+  background-color: gainsboro;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition-duration: 0.8s;
+}
+.wcm-back:hover{
+  opacity: 0.95;
+  transition-duration: 0.8s;
+}
+.wcmb-ex{
+  background-color: #332d2d;
+  border-radius: 4px;
+  height: 30px;
+  width: 380px;
+  color: white;
+  text-align: center;
+}
+.wcmb-empty{
+  width: 100%;
+  height: 0px;
+}
+.pt-1{
+  padding-top: 8px;
+}
+.wc-bot{
+  position: relative;
+  width: 100%;
+  margin: auto;
+}
+.rel{
+  position: relative;
+}
+.wcb-back{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(160, 160, 160);
+  transition-duration: 0.8s;
+  opacity: 0;
+}
+.wcb-back:hover{
+  opacity: 0.95;
+  transition-duration: 0.8s;
+}
+.special-size{
+  font-size: 50px;
+  margin: 0px;
+  margin-top: 35px;
+}
+.gray-text{
+  color: gray;
+}
+.just-r{
+  justify-content: right;
+}
+.high100{
+  height: 100%;
+}
+.wc-icon{
+  height: 40px;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+.wc-icon:hover{
+  -webkit-filter: brightness(85%);
+  transition-duration: 0.2s;
+}
+.icon-box{
+  width: 280px;
+}
+.px-1{
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.px-2{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.star{
+  height: 30px;
+}
+.n-text{
+  font-weight: 500;
+  color: rgb(10, 1, 50);
+}
+.n-text:hover{
+  font-weight: 500;
+  color: rgb(10, 1, 50);
+}
+.n-white-text{
+  color:white;
+}
+.n-white-text:hover{
+  color:white;
+}
+.wc-foot{
+  margin: auto;
+  margin-top: 50px;
+  width: 800px;
+  max-height: 800px;
+  border-radius: 0 0 8px 8px;
+}
+.wc-info{
+  margin: auto;
+  width: 800px;
+}
+.wcf-display{
+  margin: auto;
+  width: 800px;
+  height: 300px;
+}
+.info-btn{
+  border-radius: 0px;
+  background-color: transparent;
+  transition-duration: 0.4s;
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
+  padding: 12px;
+}
+.info-btn:hover{
+  transition-duration: 0.4s;
+  border-bottom: 2px solid #332d2d;
+}
+.wo-title{
+  width: 90%;
+  border-radius: 6px;
+  font-size: x-large;
+  border: 1px solid gray;
+  
+
+}
+.wo-desc{
+  width: 90%;
+  height: 50px;
+  border-radius: 6px;
+  border: 1px solid gray;
+}
+
+.wo-dets{
+  background-color: rgb(235, 97, 97);
+  width: 715px;
+  margin: auto;
+  margin-top: 35px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  padding-bottom: 20px;
+  overflow: hidden;
+}
+.welcome{
+  display: block;
+  margin: auto;
+  width: 75%;
+}
+.py-3{
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.py-4{
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+.py-5{
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.wo-muscle-icon{
+  width: 120px;
 }
