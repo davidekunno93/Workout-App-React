@@ -30,3 +30,5 @@ Limitations:
 10) If title is empty - halt workout creation - must type in title of workout.. desc optional - maybe add required* indication on title
 
 11) Add ability to update workouts
+
+12) Link w/in a Link on Feed - username inside the wo_card

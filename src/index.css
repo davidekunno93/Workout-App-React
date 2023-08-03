@@ -1337,8 +1337,11 @@ button:focus-visible {
   border-radius: 6px;
   font-size: x-large;
   border: 1px solid gray;
-  
-
+  transition-duration: 0.4s;
+}
+.wo-title:hover{
+  box-shadow: 0 0px 8px rgba(140, 197, 243, 0.5);
+  transition-duration: 0.4s;
 }
 .wo-desc{
   width: 90%;
@@ -1375,5 +1378,42 @@ button:focus-visible {
   padding-bottom: 50px;
 }
 .wo-muscle-icon{
-  width: 120px;
+  width: 110px;
+}
+.silent{
+  color: rgb(200, 200, 200);
+}
+.w-included{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 184px;
+}
+.faded{
+  opacity: 0.2;
+}
+.green-text{
+  color:#14a44d;
+}
+.link-text{
+  color: rgb(65, 127, 234);
+  transition-duration: 0.2s;
+}
+.link-text:hover{
+  color: #6b8bff;
+  transition-duration: 0.2s;
+}
+.search-wo-box{
+  background-color: #332d2d;
+  width: 80%;
+  margin: auto;
+  border-radius: 8px;
+  height: 200px;
+}
+.ml-5{
+  margin-left: 50px;
+}
+.mx-6{
+  margin-left: 40px;
+  margin-right: 40px;
 }

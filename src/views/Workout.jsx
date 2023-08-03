@@ -8,6 +8,10 @@ const Workout = () => {
         navigate('/workout/build')
     }
 
+    const toSearchPage = () => {
+        navigate('/workout/search')
+    }
+
     return (
         <>
             <h1 className="center-text">How do you want to Workout?</h1>
@@ -20,7 +24,7 @@ const Workout = () => {
                         Create a workout from scratch using the hundreds of exercises in our databases. A minimum of 2 exercises up to a maximuum of 12.</p>
                     </div>
                 </div>
-                <div className="search-workout-box flx-c pad28">
+                <div onClick={()=> toSearchPage()} className="search-workout-box flx-c pad28">
                 <div className="title flx1 center-text gains-text mb-5"><h2>Search for a Workout</h2></div>
                     <div className="picture flx1"><img className="img-mag center" src="/images/mag-glass.png" /></div>
                     <div className="desc flx1">

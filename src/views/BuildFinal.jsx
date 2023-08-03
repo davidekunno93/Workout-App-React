@@ -157,6 +157,11 @@ const BuildFinal = (props) => {
             alert("This workout already exists! Please make some changes to it before you create it")
         } else if (data.data === "noName") {
             alert("Please Create a name for your workout")
+        } else if (data.message === "successful") {
+            console.log(data)
+            let emptyWorkout = { "size": 0, "exercises": {} }
+            setWorkout(emptyWorkout)
+            navigate('/workout-card')
         } else {
             console.log(data)
         }

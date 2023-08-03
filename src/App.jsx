@@ -13,6 +13,7 @@ import Home from './views/Home'
 import BuildFinal from './views/BuildFinal'
 import { DataContext } from './context/DataProvider'
 import WorkoutCard from './views/WorkoutCard'
+import Search from './views/Search'
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
         <Route children path='/register' element={<Register />} />
         <Route children path='/login' element={<Login />} />
         <Route children path='/workout' element={<Workout />} />
+        <Route children path='/workout/search' element={<Search />} />
         <Route children path='/workout/build' element={<Build finalWorkout={finalWorkout} setFinalWorkout={setFinalWorkout} workout={workout} setWorkout={setWorkout} />} />
         <Route children path='/workout/build-final' element={<BuildFinal finalWorkout={finalWorkout} setFinalWorkout={setFinalWorkout} workout={workout} setWorkout={setWorkout} />} />
         <Route children path='/workout/ready' element={<ReadyMade />} />

@@ -156,7 +156,7 @@ const Build = (props) => {
                         <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.data.name} *{ex.quantity}</strong></p></div>
                         <div className="two flx5 pt-2 front">
                             {ex.data.equipment === "e_z_curl_bar" || ex.data.equipment === "dumbbell" || ex.data.equipment === "barbell" || ex.equipment === "cable" ?
-                                <img className="equip-icon" src={`/images/weight-logo.png`} /> : <div className="card-empty"></div>}
+                                <img className="equip-icon" src={`/images/curved-weight-logo.png`} /> : <div className="card-empty"></div>}
                             <img className="wo-muscle-group-icon" src={`/images/${ex.data.muscle}-logo.png`} />
                             <img className="diff-icon" src={`/images/${ex.data.difficulty}-logo.png`} />
                         </div>
@@ -191,6 +191,7 @@ const Build = (props) => {
                             <option value="biceps">Biceps</option>
                             <option value="calves">Calves</option>
                             <option value="chest">Chest</option>
+                            <option value="glutes">Glutes</option>
                             <option value="hamstrings">Hamstrings</option>
                             <option value="lats">Lats</option>
                             <option value="lower_back">Lower Back</option>
@@ -230,7 +231,7 @@ const Build = (props) => {
                             <div className="one flx1 wide100 front"><p className="m0 white-text center-text"><strong>{ex.name}</strong></p></div>
                             <div className="two flx5 pad8 front">
                                 {ex.equipment === "dumbbell" || ex.equipment === "barbell" || ex.equipment === "e-z_curl_bar" || ex.equipment === "cable" ?
-                                    <img className="equip-icon" src={`/images/weight-logo.png`} /> : <div className="card-empty"></div>}
+                                    <img className="equip-icon" src={`/images/curved-weight-logo.png`} /> : <div className="card-empty"></div>}
                                 <img className="muscle-group-icon" src={`/images/${ex.muscle}-logo.png`} />
                                 <img className="diff-icon" src={`/images/${ex.difficulty}-logo.png`} />
                             </div>
