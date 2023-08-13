@@ -1,16 +1,20 @@
 import axios from "axios"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
-const Search = () => {
-    const [mus, setMus] = useState([])
+const Search = (props) => {
+    // mus is the list of muscles searched for by the user
+    const [mus, setMus] = useState([]);
+    const [intensity, setIntensity] = useState(null);
+    const [circuits, setCircuits] = useState(null);
 
     const muscleFind = e => {
         let text = e.target.value.toLowerCase()
-        if (text.includes("abdominals") && !mus.includes("Abdominals  ")) {
+        if (text.includes("abdominals") && !mus.includes("Abdominals  ") || text.includes("abs") && !mus.includes("Abdominals  ")) {
             let musCopy = mus.slice();
             musCopy.push("Abdominals  ");
             setMus(musCopy);
-        } else if (!text.includes("abdominals") && mus.includes("Abdominals  ")) {
+        } else if (!text.includes("abdominals") && !text.includes("abs") && mus.includes("Abdominals  ")) {
             let musCopy = mus.slice();
             musCopy = musCopy.filter(function (letter) {
                 return letter !== 'Abdominals  ';
@@ -39,7 +43,7 @@ const Search = () => {
             });
             setMus(musCopy);
         }
-        if (text.includes("back") && !mus.includes("Backs  ")) {
+        if (text.includes("back") && !mus.includes("Back  ")) {
             let musCopy = mus.slice();
             musCopy.push("Back  ");
             setMus(musCopy);
@@ -83,11 +87,11 @@ const Search = () => {
             });
             setMus(musCopy);
         }
-        if (text.includes("glutes") && !mus.includes("Glutes  ")) {
+        if (text.includes("glutes") && !mus.includes("Glutes  ") || text.includes("butt") && !mus.includes("Glutes  ")) {
             let musCopy = mus.slice();
             musCopy.push("Glutes  ");
             setMus(musCopy);
-        } else if (!text.includes("glutes") && mus.includes("Glutes  ")) {
+        } else if (!text.includes("glutes") && !text.includes("butt") && mus.includes("Glutes  ")) {
             let musCopy = mus.slice();
             musCopy = musCopy.filter(function (letter) {
                 return letter !== 'Glutes  ';
@@ -116,6 +120,17 @@ const Search = () => {
             });
             setMus(musCopy);
         }
+        if (text.includes("neck") && !mus.includes("Neck  ")) {
+            let musCopy = mus.slice();
+            musCopy.push("Neck  ");
+            setMus(musCopy);
+        } else if (!text.includes("neck") && mus.includes("Neck  ")) {
+            let musCopy = mus.slice();
+            musCopy = musCopy.filter(function (letter) {
+                return letter !== 'Neck  ';
+            });
+            setMus(musCopy);
+        }
         if (text.includes("quad") && !mus.includes("Quadriceps  ")) {
             let musCopy = mus.slice();
             musCopy.push("Quadriceps  ");
@@ -127,7 +142,7 @@ const Search = () => {
             });
             setMus(musCopy);
         }
-        if (text.includes("shoulders") || text.includes("delt") && !mus.includes("Shoulders  ")) {
+        if (text.includes("shoulders") && !mus.includes("Shoulders  ") || text.includes("delt") && !mus.includes("Shoulders  ")) {
             let musCopy = mus.slice();
             musCopy.push("Shoulders  ");
             setMus(musCopy);
@@ -162,13 +177,47 @@ const Search = () => {
         }
     }
 
-
     const searchForWorkout = async () => {
-        const resp = await axios.post('http://localhost:5000/api/search-workout', JSON.stringify(mus), {
-            headers: { "Content-Type": "application/json" }
-        })
-            .then(resp => resp.json())
-            .then(data => console.log(data))
+        if (mus.length === 0) {
+            alert("You haven't entered in any muscle groups. Type at least one in, and try again!")
+        } else {
+            let query = { "muscles": mus, "intensity": intensity, "circuits": circuits }
+            const resp = await axios.post('http://localhost:5000/api/search-workout', JSON.stringify(query), {
+                headers: { "Content-Type": "application/json" }
+            })
+                .then(resp => handleResp(resp))
+        }
+    }
+
+    const handleResp = (resp) => {
+        if (resp.status === 200) {
+            console.log(resp.data);
+            props.setSearchWorkouts(resp.data.data)
+            navigate('/workout/search/workouts')
+        }
+    }
+
+    const updateCircuits = () => {
+        if (document.getElementById("circuits-checkbox").checked) {
+            console.log("checked")
+            setCircuits("Yes")
+        } else {
+            setCircuits(null);
+        }
+    }
+
+    const updateIntensity = (e) => {
+        if (e.target.value === "none") {
+            setIntensity(null)
+        } else {
+            setIntensity(e.target.value)
+        }
+    }
+
+    const navigate = useNavigate();
+
+    const goBack = () => {
+        navigate(-1)
     }
 
     return (
@@ -177,10 +226,29 @@ const Search = () => {
 
             <div className="search-wo-box center-text">
                 <input type="text" onChange={e => muscleFind(e)} className="wo-title pad8 mt-5" placeholder="Chest, triceps, back etc..."></input>
-                <p className="white-text left-text mx-6">{mus}</p>
+                <p className="white-text left-text mx-6">{mus}&nbsp;</p>                
+                <div className="flx-r just-se">
+                    <div>
+                        <label htmlFor="intensity-dropdown" className="white-text">Intensity: </label>
+                    <select onChange={(e) => updateIntensity(e)} id="intensity-dropdown">
+                        <option value="none"></option>
+                        <option value="bodyOnly">No Weights</option>
+                        <option value="light">Light</option>
+                        <option value="medium">Medium</option>
+                        <option value="heavy">Heavy</option>
+                    </select>
+                    </div>
+                    <div>
+                        <label htmlFor="circuits-checkbox" className="white-text">Circuits Only</label>
+                        <input onChange={() => updateCircuits()} type="checkbox" id="circuits-checkbox" />
+                    </div>
+                </div>
             </div>
             <div className="card-empty"></div>
-            <button className="green-btn center" onClick={() => searchForWorkout()}>Find Workout</button>
+            <div className="center-text">
+            <button className="gray-btn center inline mt-4 mx-2" onClick={() => goBack()}>Go Back</button>
+            <button className="green-btn center inline mx-2" onClick={() => searchForWorkout()}>Find Workout</button>
+            </div>
         </>
     )
 }

@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { DataContext } from "../context/DataProvider";
 
 const Home = () => {
-    
-    const { thisWorkout, setThisWorkout } = useContext(DataContext)
+    const { user, setUser } = useContext(DataContext);
+    const { thisWorkout, setThisWorkout } = useContext(DataContext);
 
     const getData = async () => {
         const response = await axios.get("http://localhost:5000/api/exercise-database")
@@ -55,17 +55,9 @@ const Home = () => {
     
     const loadUsers = async () => {
         const resp = getUsers()
-        // .then(data => handleUsers(data.data))
         .then(data => setUsers(data.data))
-        // .then(data => console.log(data.data[0]))
-        // .then(resp => useData(resp.data))
     }
 
-    // const useData = async (stuff) => {
-    //     console.log(stuff[0].username)
-    // }
-
-    
     const [users, setUsers] = useState(() => loadUsers())
             
     // const handleUsers = (data) => {
@@ -89,12 +81,49 @@ const Home = () => {
     // }
    
 
+    const addToFavorites = async (workout_id) => {
+        if (!user) {
+            alert("You must be logged in to add a workout to Favorites")
+        } else {
+            let data = {"workout_id": workout_id, "user_id": user.id}
+            console.log(data)
+            const resp = await axios.post("http://localhost:5000/add-to-favorites", JSON.stringify(data), {
+                headers : {"Content-Type": "application/json"}
+            })
+            .then(resp => handleFavorites(resp))
+        }
+    }
+
+    const removeFromFavorites = async (workout_id) => {
+        let data = {"workout_id": workout_id, "user_id": user.id}
+            console.log(data)
+            const resp = await axios.post("http://localhost:5000/remove-from-favorites", JSON.stringify(data), {
+                headers : {"Content-Type": "application/json"}
+            })
+            .then(resp => handleFavorites(resp))
+    }
+
+    const handleFavorites = (resp) => {
+        console.log(resp.data)
+        setWorkouts(resp.data.data)
+        reloadUser()
+    }
+
+    const reloadUser = async () => {
+        if (user) {
+            let data = {"user_id": user.id}
+            const resp = axios.post("http://localhost:5000/reload-user", JSON.stringify(data), {
+            headers : {"Content-Type": "application/json"}
+        })
+        .then(resp => setUser(resp.data))
+        }
+    }
+
     return (
         <>
         <div className="bg-black pad28 mb-5">
         <img className="welcome" src="/images/fithub-welcome.png" />
         </div>
-
 <div className="feed-container flx-c py-3">
         {workouts && Object.keys(workouts).length > 0 ? workouts.map((w, i) => {
             return <div key={i} className="workout-card-div flx-c">
@@ -105,6 +134,7 @@ const Home = () => {
                             if (u.id === w.createdby_id){ return <div className="inline link-text" key={i}>{u.username}</div>}
                         })} </div>
                     </div>
+                    
                     <div className="wct-right mt-1h">
                         <img className="star mx-1" src="/images/no-star.png"></img>
                         <img className="star mx-1" src="/images/no-star.png"></img>
@@ -157,7 +187,7 @@ const Home = () => {
                         <div className="flx2 flx-r just-r px-2">
                             <div className="icon-box high100 flx-r just-sb">
                                 <div className="icon white-text"><img className="wc-icon" src="/images/check-icon.png" /> 0</div>
-                                <div className="icon white-text"><img className="wc-icon" src="/images/bookmark-icon.png" /> {w.numOfFavs}</div>
+                                <div className="icon white-text">{user ? (user.favorited.indexOf(w.id) > -1 ? <img className="wc-icon" src="/images/bookmark-icon-full-green.png" onClick={() => removeFromFavorites(w.id)} /> : <img className="wc-icon" src="/images/bookmark-icon.png" onClick={() => addToFavorites(w.id)} />) : <img className="wc-icon" src="/images/bookmark-icon.png" onClick={() => addToFavorites(w.id)} /> } {w.numOfFavs}</div>
                                 <div className="icon white-text"><img className="wc-icon" src="/images/review-icon.png" /> {w.numOfRatings}</div>
                             </div>
                         </div>
