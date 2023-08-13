@@ -6,10 +6,11 @@ import axios from "axios";
 const WorkoutCard = () => {
     const { thisWorkout, setThisWorkout } = useContext(DataContext)
     const { user, setUser } = useContext(DataContext);
-    const location = useLocation()
-    const { data } = location.state
+    // const location = useLocation()
+    // const { data } = location.state
 
-    console.log(data)
+    // console.log(data)
+    // setThisWorkout(data)
 
     const navigate = useNavigate();
 
@@ -73,16 +74,9 @@ const WorkoutCard = () => {
     }
     
     const addToFavorites = async (workout_id) => {
+        event.preventDefault()
         if (!user) {
-            alert("You must be logged in to add a workout to Favorites")
-        // } else if (isFavorited) {
-        //     let data = {"workout_id": workout_id, "user_id": user.id}
-        //     console.log(data)
-        //     const resp = await axios.post("http://localhost:5000/remove-from-favorites", JSON.stringify(data), {
-        //         headers : {"Content-Type": "application/json"}
-        //     })
-        //     .then(resp => handleFavorites(resp))
-
+            alert("You must be logged in to add a workout to your Favorites")
         } else {
             let data = {"workout_id": workout_id, "user_id": user.id}
             console.log(data)
@@ -90,26 +84,50 @@ const WorkoutCard = () => {
                 headers : {"Content-Type": "application/json"}
             })
             .then(resp => handleFavorites(resp))
+            // .then(resp => console.log(resp))
         }
     }
 
-    const handleFavorites = (data) => {
+    const removeFromFavorites = async (workout_id) => {
+        event.preventDefault()
+        let data = {"workout_id": workout_id, "user_id": user.id}
         console.log(data)
+        const resp = await axios.post("http://localhost:5000/remove-from-favorites", JSON.stringify(data), {
+            headers : {"Content-Type": "application/json"}
+        })
+        .then(resp => handleFavorites(resp))
+        // .then(resp => console.log(resp))
     }
 
-    console.log(user)
+    const handleFavorites = (resp) => {
+        event.preventDefault()
+        console.log(resp)
+        setThisWorkout(resp.data.data2)
+        reloadUser()
+    }
 
-    let isFavorited = null
-    
+    // console.log(user)
+
+    const reloadUser = async () => {
+        if (user) {
+            let data = {"user_id": user.id}
+            const resp = axios.post("http://localhost:5000/reload-user", JSON.stringify(data), {
+            headers : {"Content-Type": "application/json"}
+        })
+        .then(resp => setUser(resp.data))
+        console.log("User reloaded")
+        }
+    }
 
     return (
         <>
-            <h1 className="center-text">{data.wo_name}</h1>
+        {thisWorkout ? <>
+            <h1 className="center-text">{thisWorkout.wo_name}</h1>
             <div className="workout-card-div flx-c">
                 <div className="wc-top flx1 flx-r just-sb pad8 n-white-text">
                     <div className="wct-left">
-                        <p className="wctl-name m0"><strong>{data.wo_name}</strong></p>
-                        <p className="wctl-createdby m0 small">Created by: <span className="link-text">{data.createdby_un}</span> </p>
+                        <p className="wctl-name m0"><strong>{thisWorkout.wo_name}</strong></p>
+                        <p className="wctl-createdby m0 small">Created by: <span className="link-text">{thisWorkout.createdby_un}</span> </p>
                     </div>
                     <div className="wct-right mt-1h">
                         <img className="star mx-1" src="/images/no-star.png"></img>
@@ -117,74 +135,62 @@ const WorkoutCard = () => {
                         <img className="star mx-1" src="/images/no-star.png"></img>
                         <img className="star mx-1" src="/images/no-star.png"></img>
                         <img className="star mx-1" src="/images/no-star.png"></img>
-                        ({data.numOfRatings})
+                        ({thisWorkout.numOfRatings})
                     </div>
                 </div>
                 <div className="wc-mid flx7 flx-r just-se n-text">
                     <div className="wcm-back flx-r flx-wrap just-se">
                         <div className="wcmb-empty"></div>
-                        {data.ex_names_dash ? data.ex_names_dash.split("*").map((en, i) => {
+                        {thisWorkout.ex_names_dash ? thisWorkout.ex_names_dash.split("*").map((en, i) => {
                             return <div key={i} className="wcmb-ex">{en}</div>
                         }) : null}
                     </div>
                     <div className="wcm-muscles">
                         <div className="muscs flx-r just-se mt-3">
-                            {data.main_muscles.includes("Abdominals") ? <img className="wo-muscle-icon" src="/images/abdominals-logo.png" /> : null}
-                            {data.main_muscles.includes("Abductors") ? <img className="wo-muscle-icon" src="/images/abductors-logo.png" /> : null}
-                            {data.main_muscles.includes("Adductors") ? <img className="wo-muscle-icon" src="/images/adductors-logo.png" /> : null}
-                            {data.main_muscles.includes("Biceps") ? <img className="wo-muscle-icon" src="/images/biceps-logo.png" /> : null}
-                            {data.main_muscles.includes("Calves") ? <img className="wo-muscle-icon" src="/images/calves-logo.png" /> : null}
-                            {data.main_muscles.includes("Chest") ? <img className="wo-muscle-icon" src="/images/chest-logo.png" /> : null}
-                            {data.main_muscles.includes("Forearms") ? <img className="wo-muscle-icon" src="/images/forearms-logo.png" /> : null}
-                            {data.main_muscles.includes("Glutes") ? <img className="wo-muscle-icon" src="/images/glutes-logo.png" /> : null}
-                            {data.main_muscles.includes("Hamstrings") ? <img className="wo-muscle-icon" src="/images/hamstrings-logo.png" /> : null}
-                            {data.main_muscles.includes("Lats") ? <img className="wo-muscle-icon" src="/images/lats-logo.png" /> : null}
-                            {data.main_muscles.includes("Lower_back") ? <img className="wo-muscle-icon" src="/images/lower_back-logo.png" /> : null}
-                            {data.main_muscles.includes("Middle_back") ? <img className="wo-muscle-icon" src="/images/middle_back-logo.png" /> : null}
-                            {data.main_muscles.includes("Neck") ? <img className="wo-muscle-icon" src="/images/neck-logo.png" /> : null}
-                            {data.main_muscles.includes("Quadriceps") ? <img className="wo-muscle-icon" src="/images/quadriceps-logo.png" /> : null}
-                            {data.main_muscles.includes("Shoulders") ? <img className="wo-muscle-icon" src="/images/shoulders-logo.png" /> : null}
-                            {data.main_muscles.includes("Traps") ? <img className="wo-muscle-icon" src="/images/traps-logo.png" /> : null}
-                            {data.main_muscles.includes("Triceps") ? <img className="wo-muscle-icon" src="/images/triceps-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Abdominals") ? <img className="wo-muscle-icon" src="/images/abdominals-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Abductors") ? <img className="wo-muscle-icon" src="/images/abductors-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Adductors") ? <img className="wo-muscle-icon" src="/images/adductors-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Biceps") ? <img className="wo-muscle-icon" src="/images/biceps-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Calves") ? <img className="wo-muscle-icon" src="/images/calves-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Chest") ? <img className="wo-muscle-icon" src="/images/chest-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Forearms") ? <img className="wo-muscle-icon" src="/images/forearms-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Glutes") ? <img className="wo-muscle-icon" src="/images/glutes-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Hamstrings") ? <img className="wo-muscle-icon" src="/images/hamstrings-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Lats") ? <img className="wo-muscle-icon" src="/images/lats-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Lower_back") ? <img className="wo-muscle-icon" src="/images/lower_back-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Middle_back") ? <img className="wo-muscle-icon" src="/images/middle_back-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Neck") ? <img className="wo-muscle-icon" src="/images/neck-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Quadriceps") ? <img className="wo-muscle-icon" src="/images/quadriceps-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Shoulders") ? <img className="wo-muscle-icon" src="/images/shoulders-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Traps") ? <img className="wo-muscle-icon" src="/images/traps-logo.png" /> : null}
+                            {thisWorkout.main_muscles.includes("Triceps") ? <img className="wo-muscle-icon" src="/images/triceps-logo.png" /> : null}
                         </div>
                     </div>
 
                 </div>
 
-                        {user ? user.favorited.map((w_id, i) => {
-                            // return <h6>{w_id}</h6>
-                            if (w_id === data.id) {
-                                // return <h6>return statement</h6>
-                                isFavorited = "Yes"
-                            } 
-                        }): <h6>nothing is printing</h6> }
-
-                        {isFavorited ? <h6>"Added to favorites"</h6> : "No it's not!"}
+                        
 
                 <div className="wc-bot flx5 flx-r just-se rel">
-                    {data.intRating === "bodyOnly" ? <img className="w-included faded" src={`/images/bodyOnly.png`} /> : <img className="w-included" src={`/images/${data.intRating}-weights-included.png`} />}
+                    {thisWorkout.intRating === "bodyOnly" ? <img className="w-included faded" src={`/images/bodyOnly.png`} /> : <img className="w-included" src={`/images/${thisWorkout.intRating}-weights-included.png`} />}
                     <div className="wcb-back eight flx-c">
                         <div className="wcbb-desc flx3">
-                            <p className="m0 ml-2"><strong>Focus on:</strong> {data.main_muscles}</p>
+                            <p className="m0 ml-2"><strong>Focus on:</strong> {thisWorkout.main_muscles}</p>
                             <p className="m0 ml-2"><strong>Description: </strong></p>
-                            <p className="m0 ml-2 small">{data.wo_desc}</p>
+                            <p className="m0 ml-2 small">{thisWorkout.wo_desc}</p>
                         </div>
                         <div className="flx2 flx-r just-r px-2">
                             <div className="icon-box high100 flx-r just-sb">
                                 <div className="icon white-text"><img className="wc-icon" src="/images/check-icon.png" /> 0</div>
-                                <div className="icon white-text" onClick={() => addToFavorites(data.id)}>{isFavorited ? <img className="wc-icon" src="/images/bookmark-icon-full.png" /> : <img className="wc-icon" src="/images/bookmark-icon.png" /> } {Array.isArray(workouts) ? workouts.map((w, i) => {
-                                    if (data.id === w.id) {
-                                        return w.numOfFavs
-                                }})
-                                 : null}</div>
-                                <div className="icon white-text"><img className="wc-icon" src="/images/review-icon.png" /> {data.numOfRatings}</div>
+                                <div className="icon white-text"> {user ? (user.favorited.indexOf(thisWorkout.id) > -1 ? <img className="wc-icon" src="/images/bookmark-icon-full-green.png" onClick={() => removeFromFavorites(thisWorkout.id)} /> : <img className="wc-icon" src="/images/bookmark-icon.png" onClick={() => addToFavorites(thisWorkout.id)} />) : <img className="wc-icon" src="/images/bookmark-icon.png" onClick={() => addToFavorites(thisWorkout.id)} />} {thisWorkout.numOfFavs}</div>
+                                <div className="icon white-text"><img className="wc-icon" src="/images/review-icon.png" /> {thisWorkout.numOfRatings}</div>
                             </div>
                         </div>
                     </div>
                     <div className="int"></div>
-                    <div className="int"><p className="m0 mt-2"><strong>INTENSITY SCORE</strong></p><span className="xxx-larges">{data.intScore}</span><span className="gray-text">/100</span></div>
-                    <div className="end"><p className="m0 mt-2"><strong>ENDURANCE RATING</strong></p><p className="xxx-larges m0">{data.endScore}<span className="medium gray-text">/5</span></p></div>
-                    <div className="circ"><p className="m0 mt-2"><strong>CIRCUITS</strong></p><p className="xxx-larges m0">{data.circuits === 1 ? <span className="silent">n/a</span> : <span className="green-text">{data.circuits}</span>}</p></div>
+                    <div className="int"><p className="m0 mt-2"><strong>INTENSITY SCORE</strong></p><span className="xxx-larges">{thisWorkout.intScore}</span><span className="gray-text">/100</span></div>
+                    <div className="end"><p className="m0 mt-2"><strong>ENDURANCE RATING</strong></p><p className="xxx-larges m0">{thisWorkout.endScore}<span className="medium gray-text">/5</span></p></div>
+                    <div className="circ"><p className="m0 mt-2"><strong>CIRCUITS</strong></p><p className="xxx-larges m0">{thisWorkout.circuits === 1 ? <span className="silent">n/a</span> : <span className="green-text">{thisWorkout.circuits}</span>}</p></div>
                 </div>
             </div>
 
@@ -200,7 +206,7 @@ const WorkoutCard = () => {
                     <div id="pexercises" className="pexercises seven wide100 high10 abs flx-r flx-wrap just-se d-none">
             
                     {Array.isArray(pexercises) ? pexercises.map((ex, i) => {
-                        if (data.pexercise_ids.includes(ex.id)) {
+                        if (thisWorkout.pexercise_ids.includes(ex.id)) {
                             index++
                     return <div key={i} className="wo-card2 mx-2 my-2">
                         <div id={i} className="wo-instructions d-none"><p className="pad8 x-small white-text center-text"><span className="medium bold white-text">Instructions:</span> <br /> {ex.ex_instructions}</p></div>
@@ -217,7 +223,7 @@ const WorkoutCard = () => {
                         </div>
 
                         
-                        <div className="wo-four flx1 wide100"><p className="m0 center-text"><div className="instructions-btn black-text" onClick={() => flipCard(i)}>Instructions</div></p></div>
+                        <div className="wo-four flx1 wide100"><div className="instructions-btn black-text center-text" onClick={() => flipCard(i)}>Instructions</div></div>
                     </div>
                     }
                 })
@@ -226,11 +232,11 @@ const WorkoutCard = () => {
 
                     </div>
                     <div id="description" className="description d-none high100 wide100 abs">
-                        <p className="mx-4 center-text"><strong>Description:</strong> <br />{data.wo_desc ? data.wo_desc : "No workout description"}</p>
+                        <p className="mx-4 center-text"><strong>Description:</strong> <br />{thisWorkout.wo_desc ? thisWorkout.wo_desc : "No workout description"}</p>
                     </div>
                     
                 </div>
-            </div>
+            </div> </> : null }
             <br />
             <button type="button" onClick={() => goBack()} className="gray-btn center">Go Back</button>
             <br /><div className="card-empty pad28"></div>

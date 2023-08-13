@@ -1223,6 +1223,7 @@ button:focus-visible {
 .wc-top{
   background-color: #332d2d;
   transition-duration: 0.4s;
+  cursor: pointer;
 }
 
 .wct-right{
@@ -1240,6 +1241,7 @@ button:focus-visible {
 }
 .wc-mid{
   position: relative;
+  cursor: pointer;
 }
 .wcm-muscles{
   border-bottom: 2px solid grey;

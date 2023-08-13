@@ -7,6 +7,13 @@ const Home = () => {
     const { user, setUser } = useContext(DataContext);
     const { thisWorkout, setThisWorkout } = useContext(DataContext);
 
+    const navigate = useNavigate()
+
+    const goToThisWorkout = (workout) => {
+        setThisWorkout(workout);
+        navigate('/workout-card')
+    }
+
     const getData = async () => {
         const response = await axios.get("http://localhost:5000/api/exercise-database")
         return response.status === 200 ? response.data : null
@@ -83,7 +90,7 @@ const Home = () => {
 
     const addToFavorites = async (workout_id) => {
         if (!user) {
-            alert("You must be logged in to add a workout to Favorites")
+            alert("You must be logged in to add a workout to your Favorites")
         } else {
             let data = {"workout_id": workout_id, "user_id": user.id}
             console.log(data)
@@ -124,10 +131,11 @@ const Home = () => {
         <div className="bg-black pad28 mb-5">
         <img className="welcome" src="/images/fithub-welcome.png" />
         </div>
+        {/* to="/workout-card" state={{data: w}} */}
 <div className="feed-container flx-c py-3">
         {workouts && Object.keys(workouts).length > 0 ? workouts.map((w, i) => {
             return <div key={i} className="workout-card-div flx-c">
-                <Link to="/workout-card" state={{data: w}} className="wc-top flx1 flx-r just-sb pad8 n-white-text">
+                <div onClick={() => goToThisWorkout(w)} className="wc-top flx1 flx-r just-sb pad8 n-white-text">
                     <div className="wct-left">
                         <p className="wctl-name m0"><strong>{w.wo_name.charAt(0).toUpperCase()+w.wo_name.slice(1)}</strong></p>
                         <div className="wctl-createdby m0 small">Created by: {!Array.isArray(users) ? <Link>w.createdby_id</Link> : users.map((u, i) => {
@@ -143,8 +151,8 @@ const Home = () => {
                         <img className="star mx-1" src="/images/no-star.png"></img>
                         ({w.numOfRatings})
                     </div>
-                </Link>
-                <Link to="/workout-card" state={{data: w}} className="wc-mid flx7 flx-r just-se n-text">
+                </div>
+                <div onClick={() => goToThisWorkout(w)} className="wc-mid flx7 flx-r just-se n-text">
                     <div className="wcm-back flx-r flx-wrap just-se">
                         <div className="wcmb-empty"></div>
                         {w.ex_names_dash ? w.ex_names_dash.split("*").map((en, i) => {
@@ -174,7 +182,7 @@ const Home = () => {
                         </div>
                     </div>
                     
-                </Link>
+                </div>
                 
                 <div className="wc-bot flx5 flx-r just-se rel">
                         {w.intRating === "bodyOnly" ? <img className="w-included faded" src={`/images/bodyOnly.png`} /> : <img className="w-included" src={`/images/${w.intRating}-weights-included.png`} /> }
